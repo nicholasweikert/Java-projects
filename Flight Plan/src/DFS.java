@@ -1,6 +1,6 @@
-//create a temporary list of current traversed path (needs to incorporate iterative backtracking)
+//create a temporary list of current traversed path (incorporates iterative backtracking)
 //if a route to destination is available, copy the route to the paths list
-//needs to be sorted - can either sort by time(T) or cost(C) during creation or after
+//needs to be sorted - can either sort by time(T) or cost(C) after paths are found
 
 /*					Dallas
  * 				/			\
@@ -8,8 +8,9 @@
  * 				|	   X	|
  * 			Chicago	-----	Florida
  * 
- * 	Dallas---->Houston
+ * 	Dallas---->Houston	DH	DAH	DACH	DACFH	DAFH	DAFCH
  * 	Chicago--->Dallas
+ * austin 
  */
 
 public class DFS {
@@ -19,18 +20,19 @@ public class DFS {
 	Stack<Vertex> traversal = new Stack<Vertex>();
 	
 	public void performSearch(linkedlist<linkedlist<Vertex>> paths, CityGraph myState, String[] params){
-		//reset visited param for each node in the list
-		Node<Vertex> temp = myState.nodeList.head;
-		while (temp != null){
-			temp.data.visited = false;
-			temp = temp.next;
-		}
 		//removing any excess data stored in the DFS object from past searches
+		//can replace this by creating new stacks to use, java's garbage collection
+		//would handle the junk
 		while (tempPath.peek() != null)
 			tempPath.pop();
 		
 		while (traversal.peek() != null)
 			traversal.pop();
+		
+		for (Node<Vertex> tmp = myState.getNode(params[0]); tmp != null; tmp = tmp.next){
+			tmp.data.canVisit = 0;
+			tmp.data.visited = 0;
+		}
 		
 		
 		/* perform depth-first search on our graph
@@ -41,64 +43,82 @@ public class DFS {
 		Node<Vertex> V = null;
 		while (traversal.peek() != null){
 			boolean visitable = false; //flag to see if we added any nodes to traversal stack
+			
+			//I ran into a really strange error (which might have resulted from no masking)
+			//any time i was updating the vertex, i had to use my graph's getnode method
+			//otherwise, traversal.pop() would sometimes not return the correct node
 			V = myState.getNode(traversal.pop().Name);
-			V.data.visited = true;
 			tempPath.push(V.data);
-			System.out.println(V.data.Name + "\n");
+			//System.out.println("\n" + V.data.Name + "\n");
 			Node<Edge> e = V.data.Adjacencies.head;
 			while (e != null){
 				if (e.data.dest.Name.equals(params[1])){
 					//copy tempPath as a successful path to paths
-					System.out.println("ADDING PATH");
+					//System.out.println("\nADDING PATH");
 					tempPath.push(e.data.dest);
 					linkedlist<Vertex> tempList = new linkedlist<Vertex>();
 					paths.add(tempList);
+					//System.out.print("PATH: ");
 					for (Node<Vertex> tmp = tempPath.list.head; tmp != null; tmp = tmp.next){
 						tempList.add(tmp.data);
+						//System.out.print(tmp.data.Name + " ");
 					}
+					//System.out.println("\n");
 					tempPath.pop();
 				}
-				else if (!(e.data.dest.visited)){
-					//add dest vertex to the stack and continue
-					traversal.push(e.data.dest);
+				else if (!tempPath.list.contains(myState.getNode(e.data.dest.Name).data)){
+					traversal.push(myState.getNode(e.data.dest.Name).data);
 					visitable = true;
+					V.data.canVisit++;
 				}
-				System.out.println(e.data.dest.visited + " origin " + e.data.orig.Name + " dest " + e.data.dest.Name);
+				//System.out.println("  origin " + e.data.orig.Name + " dest " + e.data.dest.Name);
 				e = e.next;
 			}
-			System.out.println(traversal.list.size());
+			System.out.println(V.data.canVisit + " " + V.data.visited);
+			//System.out.println("visitable: " + visitable + " " + traversal.list.size());
 			//if we were unable to traverse further, backtrack until we can continue
+			//while we are backtracing, set visited to true on each node to avoid 
+			//tracing over the same path twice
 			if (!visitable){
 				System.out.println("BACKTRACKING");
-				/*
 				boolean backtracked = false;
 				while (!backtracked){
+					System.out.println("start: tempPath size: " + tempPath.list.size()
+					+ " traversal size: " + traversal.list.size());
 					//base case - when we have finished looking at all routes
-					if (traversal.peek() == null){
-						while (tempPath.peek() != null)
-							tempPath.pop().visited = false;
+					if (traversal.peek() == null)
 						return;
-					}
 					//cyclical route - we know that there is more routes to check
 					//and want to avoid infinite repetition between adjacent nodes
-					if (tempPath.peek().equals(traversal.peek())){
-						tempPath.pop().visited = false;
-						tempPath.pop().visited = false;
+					if (traversal.peek().equals(tempPath.peek())){
+						Vertex tmp = tempPath.pop();
+						tmp.canVisit = 0;
+						tmp.visited = 0;
+						tmp = tempPath.pop();
+						tmp.canVisit = 0;
+						tmp.visited = 0;
 					}
-					V = tempPath.pop();
-					V.visited = false;
-					Node<Edge> rev = V.Adjacencies.head;
+					V = myState.getNode(tempPath.pop().Name);
+					//we finished visiting this path
+					V.data.visited++;
+					Node<Edge> rev = V.data.Adjacencies.head;
 					while (rev != null){
-						if (rev.data.dest.equals(traversal.peek())){
+						//if our next destination is visitable, we stop
+						if (rev.data.dest.Name.equals(traversal.peek().Name)){
 							backtracked = true;
-							V.visited = true;
-							tempPath.push(V);
+							if (V.data.visited < V.data.canVisit){
+								tempPath.push(V.data);
+							}
+							else{
+								V.data.visited = 0;
+								V.data.canVisit = 0;
+							}
 						}
+						//otherwise, we continue backtracing
 						rev = rev.next;
-					}
-				}
-				*/
-			}
-		}
-	}
-}
+					}//end inner while
+				}//end outer while
+			}//end if (!visitable)
+		}//end search for paths loop
+	}//end performSearch method
+}//end of file

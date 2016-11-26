@@ -45,7 +45,7 @@ public class linkedlist<E> {
 		Node<E> Y = this.head;
 		//if the node requested is in the list, return true
 		while (Y != null){
-			if (Y.data.equals(V))
+			if (Y.data == V)
 				return true;
 			Y = Y.next;
 		}

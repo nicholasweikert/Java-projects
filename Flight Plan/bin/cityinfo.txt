@@ -1,4 +1,4 @@
-4
+8
 Dallas|Austin|98|47
 Austin|Houston|95|39
 Dallas|Houston|101|51
