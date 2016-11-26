@@ -41,6 +41,18 @@ public class linkedlist<E> {
 		}
 	}
 	
+	public boolean contains (E V){
+		Node<E> Y = this.head;
+		//if the node requested is in the list, return true
+		while (Y != null){
+			if (Y.data.equals(V))
+				return true;
+			Y = Y.next;
+		}
+		//if the node is not found, return false
+		return false;
+	}
+	
 	public int size(){
 		Node<E> temp = head;
 		int ret=0;

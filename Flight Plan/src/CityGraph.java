@@ -35,7 +35,7 @@ public class CityGraph {
 	
 	//returns the node for the string we need to use
 	public Vertex getNode(String V){
-		if (!(nodeList.head == null)){
+		if (nodeList.head != null){
 			Node<Vertex> temp = nodeList.head;
 			while (temp != null){
 				if (temp.data.Name.equals(V))

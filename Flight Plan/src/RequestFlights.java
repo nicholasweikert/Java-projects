@@ -17,11 +17,26 @@ public class RequestFlights {
 	public void handleInfile(BufferedReader linereader, CityGraph myState) throws IOException{
 		numOfCommands = Integer.parseInt(linereader.readLine());
 		while ((nextline = linereader.readLine()) != null){
+
 			String[] params = nextline.split(Pattern.quote("|"));
+			System.out.println("check: " + params[0]);
 			//orig dest T/C
-			paths = requestedLine.performSearch(myState, params);
-			sort(paths);
-			sendToOutFile(paths);
+			requestedLine.performSearch(paths, myState, params);
+			//we expect a set of paths
+			//sort(paths);
+			//sendToOutFile(paths);
+
+			}
+		//checking data contained in paths
+		Node<linkedlist<Vertex>> temp = paths.head;
+		while (temp != null){
+			Node<Vertex> V = temp.data.head;
+			while (V != null){
+				System.out.print(V.data.Name + " ");
+				V = V.next;
+			}
+			System.out.println();
+			temp = temp.next;
 		}
 	}
 	
