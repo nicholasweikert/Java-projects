@@ -5,7 +5,7 @@
 
 import java.io.*;
 //origin+dest file used to create graph
-//requested flight used in dfs to find if a path exists + min cost
+//requested flight used in dfs to find if a path exists + min cost/time
 //paths must be non-cyclical
 //graph is undirected
 //output to file ordered by time or cost indicated by T or C
@@ -83,6 +83,5 @@ public class flightPlan {
 			V = V.next;
 		}
 		*/
-		
 	}
 }

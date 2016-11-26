@@ -4,7 +4,7 @@
 
 public class Vertex {
 	public String Name;
-	public boolean visited;
+	public boolean visited = false;
 	public linkedlist<Edge> Adjacencies = new linkedlist<Edge>();
 	
 	//all vertices should be created with a name

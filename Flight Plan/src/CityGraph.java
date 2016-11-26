@@ -29,17 +29,17 @@ public class CityGraph {
 	
 	//adds an edge between two vertices with their cost and time to travel
 	public void connect(Vertex orig, Vertex dest, double cost, double time){
-		getNode(orig.Name).Adjacencies.add(new Edge(orig, dest, cost, time));
-		getNode(dest.Name).Adjacencies.add(new Edge(dest, orig, cost, time));
+		getNode(orig.Name).data.Adjacencies.add(new Edge(orig, dest, cost, time));
+		getNode(dest.Name).data.Adjacencies.add(new Edge(dest, orig, cost, time));
 	}
 	
 	//returns the node for the string we need to use
-	public Vertex getNode(String V){
+	public Node<Vertex> getNode(String V){
 		if (nodeList.head != null){
 			Node<Vertex> temp = nodeList.head;
 			while (temp != null){
 				if (temp.data.Name.equals(V))
-					return temp.data;
+					return temp;
 				temp = temp.next;
 			}
 		}
@@ -51,7 +51,7 @@ public class CityGraph {
 	public boolean contains(Vertex V){
 		//city name to find is V.Name
 		//search the list for the city name, if not found then return false
-		if(!(nodeList.head == null)){
+		if(nodeList.head != null){
 			Node<Vertex> temp = nodeList.head;
 			while (temp != null){
 				if (temp.data.Name.equals(V.Name))

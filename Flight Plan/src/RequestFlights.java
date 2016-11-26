@@ -17,7 +17,6 @@ public class RequestFlights {
 	public void handleInfile(BufferedReader linereader, CityGraph myState) throws IOException{
 		numOfCommands = Integer.parseInt(linereader.readLine());
 		while ((nextline = linereader.readLine()) != null){
-
 			String[] params = nextline.split(Pattern.quote("|"));
 			System.out.println("check: " + params[0]);
 			//orig dest T/C
