@@ -4,15 +4,17 @@
 
 
 public class DFS {
+	linkedlist<linkedlist<Vertex>> paths;
 	//container for temporary path to destination
 	Stack<Vertex> tempPath = new Stack<Vertex>();
 	//stack for traversing graph
 	Stack<Vertex> traversal = new Stack<Vertex>();
 	
-	public void performSearch(linkedlist<linkedlist<Vertex>> paths, CityGraph myState, String[] params){
+	public linkedlist<linkedlist<Vertex>> performSearch(CityGraph myState, String[] params){
 		//removing any excess data stored in the DFS object from past searches
 		//can replace this by creating new stacks to use, java's garbage collection
 		//would handle the junk
+		paths = new linkedlist<linkedlist<Vertex>>();
 		while (tempPath.peek() != null)
 			tempPath.pop();
 		
@@ -65,7 +67,7 @@ public class DFS {
 				while (!backtracked){
 					//base case - when we have finished looking at all routes
 					if (traversal.peek() == null)
-						return;
+						return paths;
 					//cyclical route - we know that there is more routes to check
 					//and want to avoid infinite repetition between adjacent nodes
 					if (traversal.peek() == tempPath.peek()){
@@ -99,5 +101,6 @@ public class DFS {
 				}//end outer while
 			}//end if (!visitable)
 		}//end search for paths loop
+		return paths;
 	}//end performSearch method
 }//end of file

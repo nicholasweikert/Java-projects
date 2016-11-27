@@ -62,4 +62,10 @@ public class linkedlist<E> {
 		}
 		return ret;
 	}
+	
+	public void swap(Node<E> L1, Node<E> L2){
+		Node<E> tmp = L1;
+		L1 = L2;
+		L2 = tmp;
+	}
 }

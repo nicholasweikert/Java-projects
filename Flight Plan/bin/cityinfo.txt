@@ -2,8 +2,8 @@
 Dallas|Austin|98|47
 Austin|Houston|95|39
 Dallas|Houston|101|51
-Austin|Chicago|144|192
-Chicago|Houston|100|100
-Florida|Chicago|100|100
+Austin|Chicago|0|192
+Chicago|Houston|0|100
+Florida|Chicago|0|100
 Austin|Florida|100|100
 Florida|Houston|100|100

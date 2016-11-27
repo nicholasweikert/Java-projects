@@ -30,6 +30,8 @@ public class flightPlan {
 		
 		BufferedReader linereader = null;				//file reader
 		
+		PrintWriter outfile = null;						//output file
+		
 		/*error handling for:
 		 *opening orig/dest file
 		 *creating a graph from the infile
@@ -57,7 +59,10 @@ public class flightPlan {
 		 */
 		try{
 		linereader = new BufferedReader(new FileReader("./bin/flightrequests.txt"));
-		planner.handleInfile(linereader, myState);
+		outfile = new PrintWriter("./bin/EfficientPaths.txt", "UTF-8");
+		planner.handleInfile(linereader, myState, outfile);
+		linereader.close();
+		outfile.close();
 		}
 		catch (IOException e){
 			System.out.println("One of two errors occurred:\n"
