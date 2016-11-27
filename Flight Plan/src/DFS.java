@@ -2,16 +2,6 @@
 //if a route to destination is available, copy the route to the paths list
 //needs to be sorted - can either sort by time(T) or cost(C) after paths are found
 
-/*					Dallas
- * 				/			\
- * 			Austin	-----	Houston
- * 				|	   X	|
- * 			Chicago	-----	Florida
- * 
- * 	Dallas---->Houston	DH	DAH	DACH	DACFH	DAFH	DAFCH
- * 	Chicago--->Dallas
- * austin 
- */
 
 public class DFS {
 	//container for temporary path to destination
@@ -34,7 +24,6 @@ public class DFS {
 			tmp.data.visited = 0;
 		}
 		
-		
 		/* perform depth-first search on our graph
 		 * backtrace tempPath during our search to find each individual path to the dest
 		 * when a path is successfully found, copy the path list to the list of paths
@@ -49,21 +38,16 @@ public class DFS {
 			//otherwise, traversal.pop() would sometimes not return the correct node
 			V = myState.getNode(traversal.pop().Name);
 			tempPath.push(V.data);
-			//System.out.println("\n" + V.data.Name + "\n");
 			Node<Edge> e = V.data.Adjacencies.head;
 			while (e != null){
 				if (e.data.dest.Name.equals(params[1])){
 					//copy tempPath as a successful path to paths
-					//System.out.println("\nADDING PATH");
 					tempPath.push(e.data.dest);
 					linkedlist<Vertex> tempList = new linkedlist<Vertex>();
 					paths.add(tempList);
-					//System.out.print("PATH: ");
 					for (Node<Vertex> tmp = tempPath.list.head; tmp != null; tmp = tmp.next){
 						tempList.add(tmp.data);
-						//System.out.print(tmp.data.Name + " ");
 					}
-					//System.out.println("\n");
 					tempPath.pop();
 				}
 				else if (!tempPath.list.contains(myState.getNode(e.data.dest.Name).data)){
@@ -71,26 +55,20 @@ public class DFS {
 					visitable = true;
 					V.data.canVisit++;
 				}
-				//System.out.println("  origin " + e.data.orig.Name + " dest " + e.data.dest.Name);
 				e = e.next;
 			}
-			System.out.println(V.data.canVisit + " " + V.data.visited);
-			//System.out.println("visitable: " + visitable + " " + traversal.list.size());
 			//if we were unable to traverse further, backtrack until we can continue
 			//while we are backtracing, set visited to true on each node to avoid 
 			//tracing over the same path twice
 			if (!visitable){
-				System.out.println("BACKTRACKING");
 				boolean backtracked = false;
 				while (!backtracked){
-					System.out.println("start: tempPath size: " + tempPath.list.size()
-					+ " traversal size: " + traversal.list.size());
 					//base case - when we have finished looking at all routes
 					if (traversal.peek() == null)
 						return;
 					//cyclical route - we know that there is more routes to check
 					//and want to avoid infinite repetition between adjacent nodes
-					if (traversal.peek().equals(tempPath.peek())){
+					if (traversal.peek() == tempPath.peek()){
 						Vertex tmp = tempPath.pop();
 						tmp.canVisit = 0;
 						tmp.visited = 0;
@@ -103,8 +81,9 @@ public class DFS {
 					V.data.visited++;
 					Node<Edge> rev = V.data.Adjacencies.head;
 					while (rev != null){
-						//if our next destination is visitable, we stop
-						if (rev.data.dest.Name.equals(traversal.peek().Name)){
+						//if our next destination is visitable and is not part of the current path, we stop
+						if (rev.data.dest.Name.equals(traversal.peek().Name)
+								&& !(tempPath.list.contains(myState.getNode(rev.data.dest.Name).data))){
 							backtracked = true;
 							if (V.data.visited < V.data.canVisit){
 								tempPath.push(V.data);
