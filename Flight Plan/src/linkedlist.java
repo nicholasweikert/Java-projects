@@ -64,8 +64,9 @@ public class linkedlist<E> {
 	}
 	
 	public void swap(Node<E> L1, Node<E> L2){
-		Node<E> tmp = L1;
-		L1 = L2;
-		L2 = tmp;
+		//swap the data contained in the nodes without altering the linkedlist
+		E tmp = L1.data;
+		L1.data = L2.data;
+		L2.data = tmp;
 	}
 }

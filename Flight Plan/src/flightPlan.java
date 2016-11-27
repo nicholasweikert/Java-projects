@@ -1,25 +1,21 @@
 //Nicholas Weikert
 //naw140030
 //CE 3345
-//describe the project
+/* This project uses a depth-first search to find all routes in a graph from origin
+ * to destination. Steps of the project are as follows:
+ * 
+ * origin+dest file used to create graph
+ * requested flight file used in dfs to find any paths that exist + min cost/time
+ * 		paths are non-cyclical
+ * 		graph is undirected
+ * sort the top 3 paths by time or cost indicated by T or C
+ * output to file
+ */
 
 import java.io.*;
-//origin+dest file used to create graph
-//requested flight used in dfs to find if a path exists + min cost/time
-//paths must be non-cyclical
-//graph is undirected
-//output to file ordered by time or cost indicated by T or C
 
 
 public class flightPlan {
-	//create the graph with first file
-	//while reading in the names of cities, create a list to reference
-	//for requested part, have each node contain a visited flag
-	//set every city to visited = false while traversing list to start
-	//add start city to stack
-	//BFS through graph to find ALL paths to destination
-	//store a list of lists of successful paths to destination
-	//may be able to use either edges or nodes
 	public static void main(String[] args) {
 		CityGraph myState = new CityGraph();			//graph containing vertices and edges
 		
@@ -38,7 +34,7 @@ public class flightPlan {
 		 *closing the file after graph is made
 		 */
 		try{
-		linereader = new BufferedReader(new FileReader("./bin/cityinfo.txt"));
+		linereader = new BufferedReader(new FileReader(args[0]));
 		newGraph.createGraph(linereader, myState);
 		linereader.close();
 		}
@@ -54,12 +50,15 @@ public class flightPlan {
 		
 		/* error handling for:
 		 * opening flight requests file
+		 * opening output file
 		 * performing a search in the file to find all paths
-		 * Closing the file after all paths have been found
+		 * 		sorting paths that have been found
+		 * 		writing to output file
+		 * Closing the files after all paths have been found
 		 */
 		try{
-		linereader = new BufferedReader(new FileReader("./bin/flightrequests.txt"));
-		outfile = new PrintWriter("./bin/EfficientPaths.txt", "UTF-8");
+		linereader = new BufferedReader(new FileReader(args[1]));
+		outfile = new PrintWriter(args[2], "UTF-8");
 		planner.handleInfile(linereader, myState, outfile);
 		linereader.close();
 		outfile.close();
@@ -73,20 +72,5 @@ public class flightPlan {
 			e.printStackTrace();
 			return;
 		}
-		/*
-		Node<Vertex> V = myState.nodeList.head;
-		while (V != null){
-			Node<Edge> adj = V.data.Adjacencies.head;
-			Vertex vert = V.data;
-			System.out.println(vert.Name + "'s adjacent vertices:");
-			while (adj != null){
-				Edge edge = adj.data;
-				System.out.println("origin: " + edge.orig.Name + " destination: " + edge.dest.Name
-						+ " cost: " + edge.cost + " time: " + edge.time);
-				adj = adj.next;
-			}
-			V = V.next;
-		}
-		*/
 	}
 }

@@ -1,5 +1,5 @@
-//handles requests input file, finds requested paths, and outputs to a file
-//uses DFS (Depth-First-Search) helper class to perform the search and return
+//Handles requests input file, finds requested paths, and outputs to a file.
+//Uses DFS (Depth-First-Search) helper class which performs each search and returns
 //list of lists of resulting possible paths
 
 import java.io.*;
@@ -19,38 +19,36 @@ public class RequestFlights {
 		while ((nextline = linereader.readLine()) != null){
 			currRequest++;
 			String[] params = nextline.split(Pattern.quote("|"));
-			//orig dest T/C
+			//if the origin or destination requested does not exist, go ahead and print
+			//and continue without attempting to search
+			if ((myState.getNode(params[0]) == null) || (myState.getNode(params[1]) == null)){
+				paths = new linkedlist<linkedlist<Vertex>>();
+				sendToOutFile(myState, paths, params, currRequest, outfile);
+				continue;
+			}
+			/*	params = orig dest T/C
+			 *  after params are obtained from the infile, we send it to the search class
+			 *  next, send the paths obtained to a sorting method that compares total values
+			 *  finally, forward the verticed, edges, and total weights to output file
+			 */
 			paths = requestedLine.performSearch(myState, params);
 			sort(paths, params, myState);
 			sendToOutFile(myState, paths, params, currRequest, outfile);
-			
-			//checking data contained in paths
-			Node<linkedlist<Vertex>> temp = paths.head;
-			while (temp != null){
-				Node<Vertex> V = temp.data.head;
-				while (V != null){
-					System.out.print(V.data.Name + " ");
-					V = V.next;
-				}
-				System.out.println();
-				temp = temp.next;
-			}
 		}
 	}
 	
 	//sorts each set by time or cost (T or C)
 	public void sort(linkedlist<linkedlist<Vertex>> paths, String[] params, CityGraph myState){
 		Node<linkedlist<Vertex>> currPath;
-		/* 
+		/* find the min 3 lists in paths:
 		 * loop through every list of paths, tail to head, get the total (of time or cost)
-		 * between two lists and compare. bubble the max 3 from the tail to the head
+		 * between two lists and compare. bubble the min 3 from the tail to the head
 		 */
-		//find the min in the 3 lists
 		for (int i = 0; i < 3; i++){
 			currPath = paths.tail;
 			while (currPath.prev != null){
 				//do a comparison to swap list positions
-				//if curr list total time is less than the prev, swap
+				//if curr list total weight is less than the prev, swap
 				if (getTotal(getEdgeList(myState, currPath.data), params[2]) 
 						< getTotal(getEdgeList(myState, currPath.prev.data), params[2])){
 					paths.swap(currPath, currPath.prev);
@@ -79,28 +77,31 @@ public class RequestFlights {
 		//send to outfile the top 3 paths (already sorted)
 		Node<linkedlist<Vertex>> currList = paths.head;
 		if (currList == null){
-			outfile.print("No paths were found between the origin " + params[0]
+			outfile.println("No paths were found between the origin " + params[0]
 					+ " and the destination " + params[1]);
 		}
-		for (int i = 0; i < 3; i++){
-			if (currList != null){
-				//get the edgelist from the vertex list in paths
-				linkedlist<Edge> edgeList = getEdgeList(myState, currList.data);
-				outfile.print("Path " + (i+1) + ": " );
-				Node<Edge> E = edgeList.head;
-				outfile.print(params[0]);
-				while (E != null){
-					outfile.print(" -> " + E.data.dest.Name);
-				E = E.next;
+		else{
+			for (int i = 0; i < 3; i++){
+				if (currList != null){
+					//get the edgelist from the vertex list in paths
+					linkedlist<Edge> edgeList = getEdgeList(myState, currList.data);
+					outfile.print("Path " + (i+1) + ": " );
+					Node<Edge> E = edgeList.head;
+					outfile.print(params[0]);
+					while (E != null){
+						outfile.print(" -> " + E.data.dest.Name);
+					E = E.next;
+					}
+					outfile.println(". Time: " + (int)getTotal(edgeList, params[2])
+					+ " Cost: " + String.format("%.2f", getTotal(edgeList, params[2])));
 				}
-				outfile.println(". Time: " + (int)getTotal(edgeList, params[2])
-				+ " Cost: " + String.format("%.2f", getTotal(edgeList, params[2])));
+				//chicago-> florida-> houston ->dallas
+				else
+					break;
+				currList = currList.next;
 			}
-			//chicago-> florida-> houston ->dallas
-			else
-				break;
-			currList = currList.next;
 		}
+		outfile.println();
 	}
 	
 	public linkedlist<Edge> getEdgeList(CityGraph myState, linkedlist<Vertex> currList){
@@ -127,13 +128,13 @@ public class RequestFlights {
 		switch (timeOrCost){
 		case "T":
 			while (edge != null){
-				temp += edge.data.Time;
+				temp += edge.data.time;
 				edge = edge.next;
 			}
 			break;
 		case "C":
 			while (edge != null){
-				temp += edge.data.Cost;
+				temp += edge.data.cost;
 				edge = edge.next;
 			}
 		}
