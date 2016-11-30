@@ -70,9 +70,16 @@ public class RequestFlights {
 		case "C":
 			timeOrCost = "Cost";
 			break;
+		default:
+			timeOrCost = "X";
 		}
 		outfile.println("Flight " + currRequest + ": " + params[0] + ", " + params[1] + " ("
 				+ timeOrCost + ")");
+		if (timeOrCost.equals("X")){
+			outfile.println("The desired sort type is invalid.\nPlease write T or C "
+					+ "in the requested flights input file and try again\n");
+			return;
+		}
 
 		//send to outfile the top 3 paths (already sorted)
 		Node<linkedlist<Vertex>> currList = paths.head;

@@ -1,8 +1,8 @@
-Flight 1: Dallas, Houston (Time)
-Path 1: Dallas -> Houston. Time: 51 Cost: 51.00
-Path 2: Dallas -> Austin -> Houston. Time: 86 Cost: 86.00
+Flight 1: Dallas, Houston (X)
+The desired sort type is invalid.
+Please write T or C in the requested flights input file and try again
 
-Flight 2: Chicago, Dallas (Cost)
-Path 1: Chicago -> Austin -> Dallas. Time: 242 Cost: 242.00
-Path 2: Chicago -> Austin -> Houston -> Dallas. Time: 340 Cost: 340.00
+Flight 2: Chicago, Dallas (Time)
+Path 1: Chicago -> Austin -> Dallas. Time: 239 Cost: 239.00
+Path 2: Chicago -> Austin -> Houston -> Dallas. Time: 282 Cost: 282.00
 
