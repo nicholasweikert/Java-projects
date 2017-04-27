@@ -14,7 +14,7 @@
 
 import java.io.*;
 
-
+//uses command line arguments: java <city info> <requested flights> <output file>
 public class flightPlan {
 	public static void main(String[] args) {
 		CityGraph myState = new CityGraph();			//graph containing vertices and edges
@@ -27,6 +27,14 @@ public class flightPlan {
 		BufferedReader linereader = null;				//file reader
 		
 		PrintWriter outfile = null;						//output file
+		
+		//check # of args (should be 3), throw a usage case for running and end program
+		if (args.length != 3){
+			System.out.println("Invalid number of arguments given.");
+			System.out.println("The syntax for this program is:\n" +
+					"java <city info file> <requested flights file> <output file>");
+			return;
+		}
 		
 		/*error handling for:
 		 *opening orig/dest file
